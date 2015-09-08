@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/json'
 require './environments'
+require 'haml'
 
 
 class Url < ActiveRecord::Base
@@ -13,25 +14,32 @@ class Url < ActiveRecord::Base
 
   private
   def add_key
-    if not self.key
+    if self.key.empty?
       self.key = self.id.to_s(36)
+    end
+
+    if not self.save
+      self.key = (0...8).map { (65 + rand(26)).chr }.join
       self.save
     end
   end
 end
 
-before do
-  response["Content-Type"] = "application/json"
-  if request.request_method == 'OPTIONS'
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "POST"
+get '/all' do
+  @urls = Url.all
+  json @urls
+end
 
-    halt 200
-  end
+get '/' do
+  haml :index
 end
 
 get '/:key' do
   @url = Url.find_by key: params[:key]
+  if not @url
+    status 404
+    return json error: 'Not Found'
+  end
   @url.seen += 1
   @url.save!
   redirect @url.url
@@ -50,9 +58,3 @@ post '/' do
     end
   end
 end
-
-get '/all' do
-  @urls = Url.all
-  json @urls
-end
-

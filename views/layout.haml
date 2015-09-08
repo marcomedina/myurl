@@ -1,0 +1,11 @@
+!!!
+%html
+  %head
+    %title MyUrl
+    %link{ :href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", :type => "text/css", :rel => "stylesheet" }	
+  %body
+    = yield
+    %script{ :type => "text/javascript", :src =>"https://code.jquery.com/jquery-2.1.4.min.js"}
+    %script{ :type => "text/javascript", :src =>"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"}
+    %script{ :type => "text/javascript", :src =>"js/sammy.js"}
+    %script{ :type => "text/javascript", :src =>"js/main.js"}
